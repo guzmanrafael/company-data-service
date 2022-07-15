@@ -1,0 +1,8 @@
+.idea/**
+node_modules/
+/node_modules/
+.history
+.serverless
+.build
+invoque.http
+package-lock.json

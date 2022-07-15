@@ -1,0 +1,50 @@
+service: company-data-client
+
+package:
+  individually: true
+  include:
+    - src/enviroment/.env.local
+    - src/enviroment/.env.dev
+    - src/enviroment/.env.qa
+    - src/enviroment/.env.prod
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  stage: ${opt:stage, 'dev'}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - lambda:InvokeFunction
+          Resource: '*'
+        - Effect: Allow
+          Action:
+            - dynamodb:*
+          Resource: '*'
+  environment:
+    STAGE: ${self:provider.stage}
+
+custom:
+  serverless-offline:
+    lambdaPort: 5041
+  stages:
+    - dev
+    - qa
+    - prod
+
+functions:
+  CompanyDataService:
+    handler: src/functions/CompanyDataService.CompanyDataService
+    name: CompanyDataService
+    timeout: 15
+
+resources:
+  Resources:
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+  - serverless-plugin-optimize
